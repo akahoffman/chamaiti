@@ -40,7 +40,7 @@ function AuthPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     navigate({ to: "/dashboard", replace: true });
   }
 
@@ -56,7 +56,7 @@ function AuthPage() {
       },
     });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Conta criada. Verifique o e-mail se a confirmação estiver ativa.");
     navigate({ to: "/dashboard", replace: true });
   }

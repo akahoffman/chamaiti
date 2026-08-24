@@ -10,33 +10,120 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedCadastrosRouteImport } from './routes/_authenticated/cadastros'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedChamadosIndexRouteImport } from './routes/_authenticated/chamados.index'
+import { Route as AuthenticatedChamadosIdRouteImport } from './routes/_authenticated/chamados.$id'
+import { Route as AuthenticatedChamadosNovoRouteImport } from './routes/_authenticated/chamados.novo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCadastrosRoute = AuthenticatedCadastrosRouteImport.update({
+  id: '/cadastros',
+  path: '/cadastros',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedChamadosIndexRoute =
+  AuthenticatedChamadosIndexRouteImport.update({
+    id: '/chamados/',
+    path: '/chamados/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedChamadosIdRoute = AuthenticatedChamadosIdRouteImport.update({
+  id: '/chamados/$id',
+  path: '/chamados/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedChamadosNovoRoute =
+  AuthenticatedChamadosNovoRouteImport.update({
+    id: '/chamados/novo',
+    path: '/chamados/novo',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/cadastros': typeof AuthenticatedCadastrosRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/chamados/$id': typeof AuthenticatedChamadosIdRoute
+  '/chamados/novo': typeof AuthenticatedChamadosNovoRoute
+  '/chamados/': typeof AuthenticatedChamadosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/cadastros': typeof AuthenticatedCadastrosRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/chamados/$id': typeof AuthenticatedChamadosIdRoute
+  '/chamados/novo': typeof AuthenticatedChamadosNovoRoute
+  '/chamados': typeof AuthenticatedChamadosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/cadastros': typeof AuthenticatedCadastrosRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/chamados/$id': typeof AuthenticatedChamadosIdRoute
+  '/_authenticated/chamados/novo': typeof AuthenticatedChamadosNovoRoute
+  '/_authenticated/chamados/': typeof AuthenticatedChamadosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/cadastros'
+    | '/dashboard'
+    | '/chamados/$id'
+    | '/chamados/novo'
+    | '/chamados/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/cadastros'
+    | '/dashboard'
+    | '/chamados/$id'
+    | '/chamados/novo'
+    | '/chamados'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/cadastros'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/chamados/$id'
+    | '/_authenticated/chamados/novo'
+    | '/_authenticated/chamados/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +135,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/cadastros': {
+      id: '/_authenticated/cadastros'
+      path: '/cadastros'
+      fullPath: '/cadastros'
+      preLoaderRoute: typeof AuthenticatedCadastrosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/chamados/': {
+      id: '/_authenticated/chamados/'
+      path: '/chamados'
+      fullPath: '/chamados/'
+      preLoaderRoute: typeof AuthenticatedChamadosIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/chamados/$id': {
+      id: '/_authenticated/chamados/$id'
+      path: '/chamados/$id'
+      fullPath: '/chamados/$id'
+      preLoaderRoute: typeof AuthenticatedChamadosIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/chamados/novo': {
+      id: '/_authenticated/chamados/novo'
+      path: '/chamados/novo'
+      fullPath: '/chamados/novo'
+      preLoaderRoute: typeof AuthenticatedChamadosNovoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCadastrosRoute: typeof AuthenticatedCadastrosRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedChamadosIdRoute: typeof AuthenticatedChamadosIdRoute
+  AuthenticatedChamadosNovoRoute: typeof AuthenticatedChamadosNovoRoute
+  AuthenticatedChamadosIndexRoute: typeof AuthenticatedChamadosIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCadastrosRoute: AuthenticatedCadastrosRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedChamadosIdRoute: AuthenticatedChamadosIdRoute,
+  AuthenticatedChamadosNovoRoute: AuthenticatedChamadosNovoRoute,
+  AuthenticatedChamadosIndexRoute: AuthenticatedChamadosIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
