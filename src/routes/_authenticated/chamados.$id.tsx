@@ -4,6 +4,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type TicketUpdate = Database["public"]["Tables"]["tickets"]["Update"];
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -148,19 +151,19 @@ function TicketDetail() {
     qc.invalidateQueries({ queryKey: ["tickets"] });
   }
 
-  async function patch(values: Record<string, unknown>, message: string) {
+  async function patch(values: TicketUpdate, message: string) {
     setBusy(true);
     const { error } = await supabase.from("tickets").update(values).eq("id", id);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(message);
     refresh();
   }
 
   async function changeStatus(status: TicketStatus) {
-    const values: Record<string, unknown> = { status };
+    const values: TicketUpdate = { status };
     if (status === "em_atendimento" && t && !t.first_attended_at)
-      values['first_attended_at'] = new Date().toISOString();
+      values.first_attended_at = new Date().toISOString();
     await patch(values, `Status alterado para ${STATUS_LABEL[status]}.`);
   }
 
@@ -169,7 +172,7 @@ function TicketDetail() {
   }
 
   async function resolve() {
-    if (!solution.trim()) return toast.error("Descreva a solução aplicada.");
+    if (!solution.trim()) { toast.error("Descreva a solução aplicada."); return; }
     await patch(
       { status: "resolvido", solution: solution.trim(), resolved_at: new Date().toISOString() },
       "Chamado marcado como resolvido.",
@@ -200,7 +203,7 @@ function TicketDetail() {
       author_id: userData.user?.id ?? null,
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setComment("");
     qc.invalidateQueries({ queryKey: ["ticket-comments", id] });
     qc.invalidateQueries({ queryKey: ["ticket-history", id] });
@@ -210,7 +213,7 @@ function TicketDetail() {
     const { data, error } = await supabase.storage
       .from("ticket-attachments")
       .createSignedUrl(path, 60);
-    if (error || !data) return toast.error("Não foi possível abrir o anexo.");
+    if (error || !data) { toast.error("Não foi possível abrir o anexo."); return; }
     window.open(data.signedUrl, "_blank", "noopener");
   }
 

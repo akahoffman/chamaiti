@@ -90,7 +90,7 @@ function NewTicket() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return toast.error("Informe o título do chamado.");
+    if (!title.trim()) { toast.error("Informe o título do chamado."); return; }
     setSaving(true);
     try {
       const { data: userData } = await supabase.auth.getUser();
